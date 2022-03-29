@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="StyleSheet000.css" />
+</head>
+
+<body>
+    <p>
+        <a href="index1min.html">グラフへ</a>
+    </p>
+
+    <!--.jsと連携-->
+    <script type="text/javascript" src="actor.js"></script>
+    <script type="text/javascript" src="lavel.js"></script>
+    <script type="text/javascript" src="count.js"></script>
+
+    <!--CSVファイルの読み取り-->
+    <p>
+        ①CSVファイルを選択　▷　
+        <input type="file" name="file" id="file" multiple>
+    </p>
+    <p>
+        ②日付を選択　　　　　▷　
+        <input type="date" name="date">
+    </p>
+    <p id="output">Change the Date</p>
+    <!-- <br><br> -->
+
+    <div class="t_desk">
+        教卓
+    </div>
+
+    <!-- <div id="buttons">
+    <div id="left">
+      
+      <button onclick="koukan()" id="koukan">交換する座席の選択</button>
+      <button onclick="modosu()" id="modosu">デフォルト</button>
+    </div>
+    <div id="center">
+      <button onclick="tuika()" id="tuika">座席の追加</button>
+      <button onclick="kesu()" id="kesu">消去する座席の選択</button>
+    </div>
+  </div> -->
+    <!-- </br> -->
+    <div class="frame0">
+        <div id="frame"></div>
+    </div>
+
+    <script>
+        let seatNum = 40;
+        if (sessionStorage.getItem("desk_num") == undefined || sessionStorage.getItem("modosu") == "on") {
+            seatNum = 40; //これも本当は、storageに入れて管理出来たら…
+            //sessionStorage.setItem("modosu","off")
+        } else {
+            seatNum = Number(sessionStorage.getItem("desk_num"))
+        }
+        sessionStorage.setItem("sentaku", "off");
+        sessionStorage.setItem("seki1", 0);
+        sessionStorage.setItem("seki2", 0);
+        sessionStorage.setItem("sekikesu", 0)
+
+        window.onload = function () { //0706の時点のtest_ver2.html
+            //sessionStorage.removeItem("idou");
+            let parent = document.getElementById('frame');
+            //let n = sessionStorage.setItem("desk_num",0);
+            if (sessionStorage.getItem("saisyo") == undefined) {
+                //console.log("offですよ")
+                for (let i = 1; i <= seatNum; i++) {
+                    sessionStorage.setItem("zaseki" + i, "s_desk" + i);
+                    //console.log(sessionStorage.getItem("zaseki"+i));
+                    sessionStorage.setItem("desk_num", i); //なんか変だな～考え直そう
+                }
+                console.log("offを出た")
+                sessionStorage.setItem("saisyo", "on")
+            }
+
+            for (let k = 1; k <= seatNum; k++) {
+                //if(k!=3){
+                //console.log("席の表示")
+                var d1 = document.getElementById('frame');
+                let y = 1;
+                while (sessionStorage.getItem("zaseki" + k) != "s_desk" + y) {
+                    y++;
+                    //console.log(y);
+                }
+                d1.insertAdjacentHTML('beforeend', "<div class='s_desk' draggable='true' onclick='sentaku2(this)' id='" + sessionStorage.getItem("zaseki" + k) + "'>生徒" + y + "</div>");
+                //d1.insertAdjacentHTML('beforeend', "<div class='s_desk' draggable='true' onclick='sentaku2(this)' id='"+sessionStorage.getItem("zaseki"+k)+"'>座席"+k+"</div>");
+                //}
+            }
+
+            for (var i = 1; i <= seatNum/*Number(sessionStorage.getItem("desk_num"))*/; i++) {
+                //let data = sessionStorage.getItem("folder"+i);
+                let li_text = document.createElement('div');
+                //var br = document.createElement('br');
+                li_text.type = "button";
+                li_text.draggable = "true";
+                li_text.className = "s_desk";
+
+                //li_text.id = "folder"+i;  //idもう一度設定する
+                //li_text.value = sessionStorage.getItem("folder"+i); //input_value;   
+            }
+
+        }
+
+    </script>
+
+
+
+    <!--以下でデータの読み込みを行う-->
+    <script>
+        // console.log("通過しました!!!");
+        let result = []; //csvの中身
+        let dataLength = 0; //データの長さ
+        let member = [];
+        let time = [];
+        let num = [];
+
+        let startnum = 0;
+        let finishnum = 0;
+
+        // drawCharttt(member, time, num);
+        // // drawCharttt(result, dataLength, member, time); //データと長さを持ってdrawChart関数に移動(これは最初の軸を作成するのみ)
+        // // drawChart(result, dataLength, member, time, startnum, finishnum);
+        // drawChartTarget(result, dataLength, member, time, startnum, finishnum);
+        // drawChart2(result, dataLength, member, time, startnum, finishnum);
+        // heatmap(member, time, num);
+
+        let fileInput = document.getElementById('file');
+        let fileReader = new FileReader();
+        fileInput.onchange = () => {
+            let file = fileInput.files[0];
+            fileReader.readAsText(file, 'Shift_JIS');
+        };
+
+        //ファイルを読み取ったら実行
+        fileReader.onload = () => {
+            var txt = fileReader.result;
+
+            //読み取ったcsvデータを配列に格納
+            //var arr = txt.split("\r\n" || "\n" || "\r");
+            var arr = txt.split("\r\n");
+            arr = txt.split("\n");
+            //arr = txt.split("\r");
+            for (var i = 0; i < arr.length; i++) {
+                result[i] = arr[i].split(',');
+            }
+
+            //逆順
+            // result.reverse();
+            console.log(result);
+
+            dataLength = arr.length;
+
+            //操作している人を取り出す(※本当は児童を指定しておきたい)
+            member = actor(result, dataLength);
+        }
+
+        // 日付選択をしたら開始されるようにする
+        let choicedate = document.querySelector(`input[type='date'][name='date']`);
+        choicedate.addEventListener(`change`, function () {
+            document.querySelector(`#output`).innerHTML = choicedate.value;
+            //横軸を決定
+            [time, startnum, finishnum] = lavel(result, dataLength, choicedate, member);
+            // console.log(time);
+            num = count(result, dataLength, member, time, startnum, finishnum);
+
+
+            let total = [];
+            for (let i = 0; i < member.length; i++) {
+                total[i] = num[i].reduce(function (sum, element) {
+                    return sum + element;
+                }, 0);
+                console.log(i + 1 + 'の値は、' + total[i]);
+            }
+            console.log(total);
+
+
+            //ここに計算式を入れてセルの色変更をする
+            //再生回数の最大値ー最小値をした時間を５分割にする
+            //時間の最大値判定【再生回数】
+            let maxcount = total[0];
+            for (let x = 0; x < member.length; x++) {
+                if (maxcount < total[x]) {
+                    maxcount = total[x];
+                }
+            }
+            //時間の最小値判定【再生回数】
+            let mincount = total[0];
+            for (let x = 0; x < member.length; x++) {
+                if (mincount > total[x]) {
+                    mincount = total[x];
+                }
+            }
+            //５分割【再生回数】
+            let divecount = (maxcount - mincount) / 5
+            // console.log(count);
+            console.log(divecount);
+
+            for (let x = 0; x < member.length; x++) {
+                if (total[x] <= (mincount + divecount)) {
+                    document.getElementById("s_desk" + (x+1)).style.backgroundColor = "#ffffff";
+                    // console.log(1);
+                }
+                else if (total[x] <= (mincount + divecount * 2)) {
+                    document.getElementById("s_desk" + (x+1)).style.backgroundColor = "#ffcccc";//S20
+                    // console.log(2);
+                }
+                else if (total[x] <= (mincount + divecount * 3)) {
+                    document.getElementById("s_desk" + (x+1)).style.backgroundColor = "#ff9999";//S40
+                    // console.log(3);
+                }
+                else if (total[x] <= (mincount + divecount * 4)) {
+                    document.getElementById("s_desk" + (x+1)).style.backgroundColor = "#ff6666";//S60
+                    // console.log(4);
+                }
+                else if (total[x] <= maxcount) {
+                    document.getElementById("s_desk" + (x+1)).style.backgroundColor = "#ff0000";//S100
+                    // console.log(5);
+                }
+            }
+
+            //   if (myCharttt) {
+            //     myCharttt.destroy();
+            //   }
+            //   // if (myChart) {
+            //   //   myChart.destroy();
+            //   // }
+            //   if (myChart1) {
+            //     myChart1.destroy();
+            //   }
+            //   if (myChart2) {
+            //     myChart2.destroy();
+            //   }
+            //   if (heatMap) {
+            //     heatMap.destroy();
+            //   }
+
+            //   // console.log(num);
+            //   drawCharttt(member, time, num);
+            //   // drawCharttt(result, dataLength, member, time);
+            //   //  drawChart(result, dataLength, member, time, startnum, finishnum); //データと長さを持ってdrawChart関数に移動
+            //   drawChartTarget(result, dataLength, member, time, startnum, finishnum);
+            //   drawChart2(result, dataLength, member, time, startnum, finishnum);
+            //   heatmap(member, time, num);
+
+
+        });
+
+    </script>
+
+</body>
+
+</html>
