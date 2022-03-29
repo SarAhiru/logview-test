@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+
+    <title>EnglishSound.js</title>
+    <!--<link rel="stylesheet" href="style1.css">-->
+</head>
+
+<body>
+    <p>
+        <a href="index1min.html">グラフへ</a>
+    </p>
+
+    <script type="text/javascript" src="actor.js"></script>
+    <script type="text/javascript" src="EnglishSound.js"></script>
+
+    <!--CSVファイルの読み取り-->
+    <p>＝CSVファイルの読み取り＝</p>
+    <input type="file" name="file" id="file" multiple>
+    <br><br>
+
+
+    <style type="text/css">
+        .Title { background-color: #cccccc; font-weight: bold; }
+        .Num { text-align: right; width: 10em;}
+        .Price { background-color: #ffcc80; text-align: right; width: 6em; }
+        .Other { text-align: right;}
+        .Check { color: red; }
+    </style>
+
+
+    <!-- <h1>オーディオ使用履歴</h1> -->
+    <table border="1" id="targetTable">
+        <!-- <caption>オーディオ使用履歴</caption> -->
+        <caption>音声・動画利用時間</caption>
+        <colgroup span="1" class="Title"></colgroup><!--１行を"Title"に-->
+        <colgroup span="1" class="Num"></colgroup>
+        <colgroup span="2" class="Other"></colgroup>
+        <thead>
+            <tr class="Title">
+                <td>名前</td>
+                <td>再生回数</td>
+                <td>再生時間</td>
+                <td>再生コンテンツ数</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+
+
+    <!--以下でデータの読み込みを行う-->
+    <script>
+        console.log("通過しました!!!");
+        var result = []; //csvの中身
+        var dataLength = 0; //データの長さ
+        let member = [];
+
+        table(result, dataLength, member);
+
+        let fileInput = document.getElementById('file');
+        let fileReader = new FileReader();
+        fileInput.onchange = () => {
+          let file = fileInput.files[0];
+          fileReader.readAsText(file, 'Shift_JIS');
+        };
+
+        //ファイルを読み取ったら実行
+        fileReader.onload = () => {
+          var txt = fileReader.result
+    
+          //読み取ったcsvデータを配列に格納
+          //var arr = txt.split("\r\n" || "\n" || "\r");
+          var arr = txt.split("\r\n");
+          arr = txt.split("\n");
+          //arr = txt.split("\r");
+          //var arr = txt.split("\r\n");
+          for (var i = 0; i < arr.length; ++i) {
+            result[i] = arr[i].split(',');
+          }
+          //console.log(arr);
+          console.log(result);
+          
+          //逆順
+          result.reverse();
+          //console.log(result);
+
+          dataLength = arr.length;
+
+          //操作している人を取り出す
+          member = actor(result, dataLength);
+          
+          table(result, dataLength, member);
+          console.log("データは読み取り終わった");
+        }
+    </script>
+    <br><br>
+</body>
+</html>
