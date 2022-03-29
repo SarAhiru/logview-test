@@ -1,0 +1,105 @@
+.font-main {
+    padding: 2px;
+   }
+  
+   #btn1 {
+    margin-bottom: 4px;
+   }
+ 
+   #center{
+       text-align:right;
+   }
+
+   #left{
+       text-align:left;
+       float:left;
+   }
+  
+  .t_desk{
+      text-align:center;
+      margin-left: 310px;/*auto;*/
+      margin-bottom: 7px;
+      width:70px;
+      height:25px;
+      /*background:linear-gradient(to bottom,#99ccff,#0059b3);*/
+      padding: 0.3em 0.7em;
+      /*margin: 1em 0;
+      font-weight: bold;
+      /*color: #6091d3;/*文字色*/
+      background: #FFF;
+      border: solid 3px #D2B48C;/*#6091d3;/*線*/
+      border-radius: 10px;/*角の丸み*/
+      font-size:20px;
+  }
+  
+  .frame0{
+      text-align:center;
+      margin-left: 10px;
+      width:700px;
+      height:auto;/*500px;*/
+  }
+  
+  .s_desk{
+      margin: 4px ;
+      padding: 5px;
+      width:100px;/*165*/
+      height:50px;/*75*/
+      display:inline-block;
+      border:3px solid #D2B48C;
+      /* background-color: #D2B48C; #ccc; */
+      border-radius: 5px; /*角の丸み*/
+      /*border:2px solid green;*/
+
+  }
+
+  /* .s_sentakudesk1{
+    margin:0.5em ;
+    padding: 1px;
+    width:165px;
+    height:75px;
+    display:inline-block;
+    background-color: #D2B48C; #ccc;
+    color:green;
+    border-radius: 5px; 角の丸み
+    border:4px solid green;
+} */
+
+/* .s_sentakudesk2{
+    margin:0.5em ;
+    padding: 1px;
+    width:165px;
+    height:75px;
+    display:inline-block;
+    background-color: #D2B48C; #ccc;
+    border-radius: 5px; 角の丸み
+    color:red;
+    border:4px solid red;
+} */
+
+/* .s_sentakudesk3{
+    margin:0.5em ;
+    padding: 1px;
+    width:165px;
+    height:75px;
+    display:inline-block;
+    background-color: #D2B48C; #ccc;
+    border-radius: 5px; 角の丸み
+    color:blue;
+    border:4px solid blue;
+} */
+
+  
+  /*#buttons{
+      display:inline-block;
+  }*/
+
+  #tuika{
+      /*text-align:center;*/
+      margin-right: auto;
+      margin-left: auto;
+  }
+  #kesu{
+      /*text-align:center;*/
+      margin-right: auto;
+      margin-left: auto;
+  }
